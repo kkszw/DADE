@@ -13,8 +13,8 @@ You can install the dependencies using pip:
 ## Data Preparation
 
 1. Data Splitting: In the experiments, we maintain the same data splitting scheme as the benchmarks.
-2. Weibo21 Dataset: For the Weibo21 dataset, we follow the work from [(Ying et al.， 2023)](https://github.com/yingqichao/fnd-bootstrap). You should send an email to Dr. Qiong Nan to get the complete multimodal multi-domain dataset Weibo21.
-3. Weibo Dataset: For the Weibo dataset, we adhere to the work from (Wang et al.， 2022). In addition, we have incorporated domain labels into this dataset. You can download the final processed data from the link below.
+2. Weibo21 Dataset: For the Weibo21 dataset, we follow the work from [(Ying et al.， 2023)](https://github.com/yingqichao/fnd-bootstrap). You should send an email to [Dr. Qiong Nan](mailto:nanqiong19z@ict.ac.cn) to get the complete multimodal multi-domain dataset Weibo21.
+3. Weibo Dataset: For the Weibo dataset, we adhere to the work from [(Wang et al.， 2022)](https://github.com/yaqingwang/EANN-KDD18). In addition, we have incorporated domain labels into this dataset. You can download the final processed data from the link below.
 4.  By using this data, you will bypass the data preparation step. Link: https://pan.baidu.com/s/1TGc-8RUt6BIHO1rjnzuPxQ code: qwer
 
 ## Pretrained Models
