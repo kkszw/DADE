@@ -1,10 +1,11 @@
 # weibo 和 weibo21表现都好
 import json
 import os
+import clip
 import torch
 import tqdm
 import torch.nn.functional as F
-from transformers import BertModel
+from transformers import BertModel, RobertaModel
 from cn_clip.clip import load_from_name
 from model.layers import *
 
@@ -144,8 +145,9 @@ class IterativeAttentionalFeatureFusion(nn.Module):
 
 
 class singleMultiDomain(torch.nn.Module):
-    def __init__(self, emb_dim, bert, mlp_dims, dropout):
+    def __init__(self, emb_dim, bert, mlp_dims, dropout, dataset):
         super(singleMultiDomain, self).__init__()
+        self.dataset = dataset
         self.bert_dim = emb_dim  # 768
         self.emb_dim = 512  # 512
         self.num_heads = 8
@@ -153,9 +155,12 @@ class singleMultiDomain(torch.nn.Module):
         self.num_expert = 3
         self.head_dim = self.emb_dim // self.num_heads  # 64
         feature_kernel = {1: 64, 2: 64, 3: 64, 5: 64, 10: 64}
-        self.bert = BertModel.from_pretrained(bert).requires_grad_(False)
-        self.ClipModel, _ = load_from_name("ViT-B-16", device="cuda", download_root='./')
-
+        if self.dataset in ['pheme', 'en', 'twitter']:
+            self.bert = RobertaModel.from_pretrained('roberta-base', cache_dir='./downloads/')
+            self.ClipModel, _ = clip.load('ViT-B/32', device="cuda")
+        elif self.dataset in ['weibo', 'weibo21']:
+            self.bert = BertModel.from_pretrained(bert).requires_grad_(False)
+            self.ClipModel, _ = load_from_name("ViT-B-16", device="cuda", download_root='./')
         self.cnn = cnn_extractor(input_size=emb_dim, feature_kernel=feature_kernel)
         self.text_attention = MaskAttention(self.emb_dim)
         self.clip_attention = TokenAttention(self.emb_dim)
@@ -197,9 +202,9 @@ class singleMultiDomain(torch.nn.Module):
             nn.Sigmoid()
         )
         self.residual = nn.Sequential(
-            nn.Linear(2 * self.emb_dim, self.emb_dim//4),
+            nn.Linear(2 * self.emb_dim, self.emb_dim // 4),
             nn.ReLU(),
-            nn.Linear(self.emb_dim//4, 1),
+            nn.Linear(self.emb_dim // 4, 1),
             nn.Sigmoid()
         )
 
@@ -245,7 +250,8 @@ class singleMultiDomain(torch.nn.Module):
         bert_feature = self.bertLine(bert_feature)  # ([64, 197, 768]) -> ([64, 197, 512])
         text_atn_feature = self.text_attention(bert_feature, masks)  # ([64, 512])
         clip_atn_feature = self.clip_attention(clip_feature)
-        # clip_atn_feature = text_atn_feature
+        # clip_atn_feature = text_atn_feature   # BERT only
+        # text_atn_feature = clip_atn_feature   # CLIP only
 
         indexes = torch.tensor([index for index in category]).view(-1, 1).cuda()  # [64,1]
         domain_embedding = self.domain_embedder(indexes).squeeze(1)  # ([64, 512])
@@ -261,12 +267,20 @@ class singleMultiDomain(torch.nn.Module):
 
         text_o = self.projection_head(torch.cat([text_fine_feature, clip_feature], dim=-1))  # ->([64, 512])
         text = self.projection_head(torch.cat([text_fc, text_cf], dim=-1))
+        # DAMA
+        # text_o = text_atn_feature
+        # text = clip_atn_feature
+
         text_prime = self.iAFF(text_o, text)  # ->([64, 512])
-
+        text_prime1 = text_prime
+        # GRFE
+        # text_prime = torch.add(text_o, text)
         Loss = 0
-
-        domain_features, Loss = self.DEE(text_prime, label, category)
+        domain_features, Loss = self.DEE(text_prime, label, category)  # MEDA
         text_prime = self.fusion(torch.cat([text_prime, domain_features], dim=-1))
+        # MEDA
+        # text_prime = text_prime1
+
         final_label = torch.sigmoid(self.final_classifier(text_prime).squeeze())
         return final_label, text_atn_feature, clip_atn_feature, text_fc, text_cf, text_prime, Loss
 
@@ -326,7 +340,7 @@ class singleTrain:
                 print(f"创建文件: {log_path}")
                 break
             i += 1
-        self.model = singleMultiDomain(self.emb_dim, self.bert, self.mlp_dims, self.dropout)
+        self.model = singleMultiDomain(self.emb_dim, self.bert, self.mlp_dims, self.dropout, self.dataset)
         if self.use_cuda:
             self.model = self.model.cuda()
         loss_fn = torch.nn.BCELoss()

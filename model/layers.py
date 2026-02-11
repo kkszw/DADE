@@ -264,7 +264,7 @@ class Recorder:
             self.max_index = self.current_index
             self.showFinal()
             return 'save'
-        self.showFinal()
+        # self.showFinal()
         if self.current_index - self.max_index >= self.early_step:
             return 'esc'
         else:
