@@ -1,26 +1,26 @@
 import os
 import argparse
-
 from model.singleModel import singleTrain
 
-from utils.dataLoader import dataLoader, weiboDataLoader, enDataLoader
+from utils.dataLoader import dataLoader, weiboDataLoader, enDataLoader, phemeDataLoader, twitterDataLoader
 
 parser = argparse.ArgumentParser()
 parser.add_argument('--model_name', default='singleModel')
-parser.add_argument('--dataset', default='weibo21')  # weibo21 %% weibo
+parser.add_argument('--dataset', default='pheme')  # weibo21 %% weibo %% en
 parser.add_argument('--epoch', type=int, default=50)
 parser.add_argument('--max_len', type=int, default=197)  # raw is 197
 parser.add_argument('--num_workers', type=int, default=4)
 parser.add_argument('--early_stop', type=int, default=10)
 parser.add_argument('--bert_vocab_file', default='./downloadModel/chinese_roberta_wwm_base_ext_pytorch/vocab.txt')
 parser.add_argument('--root_path', default='../data/')
-parser.add_argument('--bert', default='./downloadModel/chinese_roberta_wwm_base_ext_pytorch')
+parser.add_argument('--bert', default='./downloadModel/roberta-base')
+# ./downloadModel/chinese_roberta_wwm_base_ext_pytorch
 parser.add_argument('--batchSize', type=int, default=64)
 parser.add_argument('--seed', type=int, default=3074)
 parser.add_argument('--gpu', default='0')
 parser.add_argument('--bert_emb_dim', type=int, default=768)
 parser.add_argument('--w2v_emb_dim', type=int, default=200)
-parser.add_argument('--lr', type=float, default=0.0001)
+parser.add_argument('--lr', type=float, default=0.001)
 parser.add_argument('--emb_type', default='bert')
 parser.add_argument('--w2v_vocab_file', default='./downloadModel/w2v/Tencent_AILab_Chinese_w2v_model.kv')
 parser.add_argument('--save_param_dir', default='./param_model')
@@ -113,6 +113,32 @@ if __name__ == '__main__':
             "文体娱乐": 7,
             "社会生活": 8
         }
+    elif config['dataset'] == "en":
+        root_path = './data/en/'
+        train_path = root_path + 'train.pkl'
+        val_path = root_path + 'val.pkl'
+        test_path = root_path + 'test.pkl'
+        category_dict = {
+            "gossipcop": 0,
+            "politifact": 1,
+            "COVID": 2,
+        }
+    elif config['dataset'] == "twitter":
+        root_path = './data/twitter/'
+        train_path = root_path + 'train.csv'
+        val_path = root_path + 'val.csv'
+        test_path = root_path + 'test.csv'
+        category_dict = {
+            "twitter": 0,
+        }
+    elif config['dataset'] == "pheme":
+        root_path = './data/pheme/'
+        train_path = root_path + 'pheme_train.csv'
+        val_path = root_path + 'pheme_val.csv'
+        test_path = root_path + 'pheme_test.csv'
+        category_dict = {
+            "pheme": 0,
+        }
 
     test_loader = None
     train_loader = None
@@ -123,10 +149,23 @@ if __name__ == '__main__':
         loader = weiboDataLoader(max_len=config['max_len'], batch_size=config['batchSize'],
                                  vocab_file=config['vocab_file'], category_dict=category_dict,
                                  num_workers=config['num_workers'], dataset='weibo')
+
     elif config['dataset'] == "weibo21":
         loader = dataLoader(max_len=config['max_len'], batch_size=config['batchSize'],
                             vocab_file=config['vocab_file'], category_dict=category_dict,
                             num_workers=config['num_workers'], dataset='weibo21')
+
+    elif config['dataset'] == "en":
+        loader = enDataLoader(max_len=config['max_len'], batch_size=config['batchSize'],
+                              category_dict=category_dict, num_workers=config['num_workers'], dataset='en')
+
+    elif config['dataset'] == "pheme":
+        loader = phemeDataLoader(max_len=config['max_len'], batch_size=config['batchSize'],
+                                 category_dict=category_dict, num_workers=config['num_workers'], dataset='pheme')
+
+    elif config['dataset'] == "twitter":
+        loader = twitterDataLoader(max_len=config['max_len'], batch_size=config['batchSize'],
+                                   category_dict=category_dict, num_workers=config['num_workers'], dataset='twitter')
 
     print("load train data")
     train_loader = loader.load_data(train_path, True)
