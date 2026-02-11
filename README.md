@@ -30,60 +30,17 @@ The project is organized as follows:
     ├── requirements.txt
     ├── data/
     │   ├── en/
-    │   │   ├── test.pkl
-    │   │   ├── train.pkl
-    │   │   └── val.pkl
     │   ├── pheme/
-    │   │   ├── pheme_binary.csv
-    │   │   ├── pheme_test.csv
-    │   │   ├── pheme_train.csv
-    │   │   └── pheme_val.csv
     │   ├── twitter/
-    │   │   ├── test.csv
-    │   │   ├── train.csv
-    │   │   ├── twitter16_merged.csv
-    │   │   └── val.csv
     │   ├── weibo/
-    │   │   ├── test_weibo.xlsx
-    │   │   ├── train_weibo.xlsx
-    │   │   └── val_weibo.xlsx
     │   └── weibo21/
-    │       ├── readme
-    │       ├── test_2_domain.xlsx
-    │       ├── train_2_domain.xlsx
-    │       └── val_2_domain.xlsx
     ├── downloadModel/
     │   ├── chinese_roberta_wwm_base_ext_pytorch/
-    │   │   ├── config.json
-    │   │   ├── model.safetensors
-    │   │   ├── special_tokens_map.json
-    │   │   ├── tokenizer_config.json
-    │   │   └── vocab.txt
     │   ├── clip-vit-base-patch16/
-    │   │   ├── config.json
-    │   │   ├── preprocessor_config.json
-    │   │   ├── pytorch_model.bin
-    │   │   └── vocab.json
     │   ├── roberta-base/
-    │   │   ├── config.json
-    │   │   ├── merges.txt
-    │   │   ├── tokenizer.json
-    │   │   └── vocab.json
     │   └── w2v/
-    │       └── Tencent_AILab_Chinese_w2v_model.kv
     ├── downloads/
-    │   ├── .locks/
-    │   │   └── models--roberta-base/
     │   └── models--roberta-base/
-    │       ├── blobs/
-    │       │   ├── 5bde1d28afb363d0103324efeb5afc8b2b397fe5e04beabb9b1ef355255ade81
-    │       │   └── 8db5e7ac5bfc9ec8b613b776009300fe3685d957
-    │       ├── refs/
-    │       │   └── main
-    │       └── snapshots/
-    │           └── e2da8e2f811d1448a5b465c236feacd80ffbac7b/
-    │               ├── config.json
-    │               └── model.safetensors
     ├── model/
     │   ├── clip_cn_vit-b-16.pt
     │   ├── layers.py
