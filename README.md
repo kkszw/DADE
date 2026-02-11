@@ -25,13 +25,13 @@ You can install the dependencies using pip:
 
 The project is organized as follows:
 
-│  clip_cn_vit-b-16.pt
-│  mae_pretrain_vit_base.pth
-│  main.py
-│  requirements.txt
-│
-├─data
-│  ├─en
++clip_cn_vit-b-16.pt
++mae_pretrain_vit_base.pth
++main.py
++requirements.txt
++
+++data
+++en
 │  │      test.pkl
 │  │      train.pkl
 │  │      val.pkl
