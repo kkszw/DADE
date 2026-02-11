@@ -25,13 +25,11 @@ You can install the dependencies using pip:
 
 The project is organized as follows:
 
-project/
-│
+.
 ├── clip_cn_vit-b-16.pt
 ├── mae_pretrain_vit_base.pth
 ├── main.py
 ├── requirements.txt
-│
 ├── data/
 │   ├── en/
 │   │   ├── test.pkl
@@ -56,7 +54,6 @@ project/
 │       ├── test_2_domain.xlsx
 │       ├── train_2_domain.xlsx
 │       └── val_2_domain.xlsx
-│
 ├── downloadModel/
 │   ├── chinese_roberta_wwm_base_ext_pytorch/
 │   │   ├── config.json
@@ -76,7 +73,6 @@ project/
 │   │   └── vocab.json
 │   └── w2v/
 │       └── Tencent_AILab_Chinese_w2v_model.kv
-│
 ├── downloads/
 │   ├── .locks/
 │   │   └── models--roberta-base/
@@ -90,13 +86,11 @@ project/
 │           └── e2da8e2f811d1448a5b465c236feacd80ffbac7b/
 │               ├── config.json
 │               └── model.safetensors
-│
 ├── model/
 │   ├── clip_cn_vit-b-16.pt
 │   ├── layers.py
 │   ├── singleModel.py
 │   └── t-sne.py
-│
 ├── param_model/
 │   └── singleModel/
 │       ├── en/
@@ -104,7 +98,6 @@ project/
 │       ├── twitter/
 │       ├── weibo/
 │       └── weibo21/
-│
 └── utils/
     ├── dataLoader.py
     ├── models_mae.py
