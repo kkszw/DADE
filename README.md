@@ -24,8 +24,7 @@ You can install the dependencies using pip:
 ## Directory Structure
 
 The project is organized as follows:
-'''
-        .
+.
         ├── clip_cn_vit-b-16.pt
         ├── mae_pretrain_vit_base.pth
         ├── main.py
@@ -102,4 +101,3 @@ The project is organized as follows:
         ├── dataLoader.py
         ├── models_mae.py
         └── pos_embed.py
-'''
